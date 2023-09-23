@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: invent_demo
+  annotations:
+    scenarios.ai.sap.com/description: "Mahindra & Mahindra usecase"
+    scenarios.ai.sap.com/name: "invent_demo1"
+    executables.ai.sap.com/name: "invent_demo1"
+    artifacts.ai.sap.com/text-data.kind: "dataset"
+    artifacts.ai.sap.com/text-model-tutorial.kind: "model"
+    artifacts.ai.sap.com/text-model-tutorial.description: "artifact description"
+    
+  labels:
+    scenarios.ai.sap.com/id: "invent_demo1"
+    executables.ai.sap.com/id: "invent_demo1"
+    ai.sap.com/version: "1.0.0"
+spec:
+  imagePullSecrets:
+    - name: credstutorialrepo
+  entrypoint: object-count-poc
+  templates:
+    - name: object-count-poc
+      metadata:
+        labels:
+          ai.sap.com/resourcePlan: starter
+      inputs:
+        artifacts:
+          - name: 4b790c32-358f-4ab2-b85a-c7758cb147a2
+            path: /app/data/
+     
+      container:
+        image: docker.io/rkiranml/object-count-poc3
+        imagePullPolicy: Always
+        command: ["/bin/sh", "-c"]
+        args:
+         - "python /app/src/main.py"
+           # set -e && echo "---Start Training---" && python /app/src/train_scikit.py && ls -lR /app/model && echo "---End Training---"
